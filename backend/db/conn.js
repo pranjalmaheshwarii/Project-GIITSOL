@@ -1,19 +1,22 @@
 const mysql = require("mysql2");
 
-
 // Create a connection to the database
 const connection = mysql.createConnection({
-  host: "10.107.181.238",
-  user: "root",
-  password: "password@12345",
-  port: "3306",
-  database: "employees_db"
+  host: process.env.DB_HOST || "mysql",// Use container name
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "Pranjal2607!@",
+  port: parseInt(process.env.DB_PORT, 10) || 3306, // Convert port to number
+  database: process.env.DB_NAME || "employees_db"
 });
 
-// open the MySQL connection
+// Open the MySQL connection
 connection.connect(error => {
-  if (error) throw error;
-  console.log("Successfully connected to the MYSQL database.");
+  if (error) {
+    console.error("Error connecting to the MySQL database:", error.stack);
+    return;
+  }
+  console.log("Successfully connected to the MySQL database.");
 });
 
 module.exports = connection;
+

@@ -1,6 +1,6 @@
 const sql = require("../db/conn")
 
-module.exports = class Empolyee {
+module.exports = class Employee {
     constructor({emp_name, emp_contact, emp_add}){
     
         this.emp_name = emp_name
