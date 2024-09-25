@@ -1,22 +1,25 @@
-const mysql = require("mysql2");
+const mysql = require('mysql2');
 
-// Create a connection to the database
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST || "mysql",// Use container name
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "Pranjal2607!@",
-  port: parseInt(process.env.DB_PORT, 10) || 3306, // Convert port to number
-  database: process.env.DB_NAME || "employees_db"
+// Create a pool of connections with direct configuration
+const pool = mysql.createPool({
+  host: 'mysql-container', // Change this to 'localhost' if not using Docker
+  user: 'root',
+  password: 'Pranjal2607!@',
+  port: 3306,
+  database: 'employees_db',
+  connectionLimit: 10 // Number of connections to create in the pool
 });
 
-// Open the MySQL connection
-connection.connect(error => {
+// Log pool connection status
+pool.getConnection((error, connection) => {
   if (error) {
     console.error("Error connecting to the MySQL database:", error.stack);
     return;
   }
   console.log("Successfully connected to the MySQL database.");
+  // Release the connection back to the pool
+  connection.release();
 });
 
-module.exports = connection;
-
+// Export the pool
+module.exports = pool.promise(); // Use promise-based API
